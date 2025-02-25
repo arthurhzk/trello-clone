@@ -3,8 +3,7 @@ import axios from "axios";
 
 const useLoginUser = (email, password) => {
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState("");
-  const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
   const [data, setData] = useState([]);
   const signUser = async () => {
     setLoading(true);
@@ -17,10 +16,11 @@ const useLoginUser = (email, password) => {
         throw new Error("Erro ao fazer a requisição.");
       }
       setData(response.data);
-      setSuccess("Requisição feita com sucesso!");
+      localStorage.setItem("token", response.data.token);
+      setMessage("Requisição feita com sucesso!");
       // eslint-disable-next-line no-unused-vars
     } catch (error) {
-      setError("Erro ao fazer a requisição. Por favor, tente novamente.");
+      setMessage("Erro ao fazer a requisição. Por favor, tente novamente.");
     } finally {
       setLoading(false);
     }
@@ -29,8 +29,7 @@ const useLoginUser = (email, password) => {
   return {
     data,
     loading,
-    error,
-    success,
+    message,
     signUser,
   };
 };

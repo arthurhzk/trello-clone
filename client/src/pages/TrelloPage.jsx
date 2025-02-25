@@ -1,9 +1,9 @@
-import Board from "../components/Board/Board";
+import AddTask from "../components/AddTask";
 
 const TrelloPage = () => {
   return (
     <>
-      <Board />
+      <AddTask />
     </>
   );
 };
