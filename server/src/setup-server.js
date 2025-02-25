@@ -1,5 +1,6 @@
 import http from "http";
 import cors from "cors";
+import cookieSession from "cookie-session";
 import prisma from "./infra/database/prisma-connection.js";
 import applicationRoutes from "./router.js";
 export class Server {
@@ -25,6 +26,13 @@ export class Server {
   }
 
   routesMiddleware() {
+    this.app.use(
+      cookieSession({
+        name: "session",
+        keys: [process.env.COOKIE_KEY],
+        maxAge: 24 * 60 * 60 * 1000,
+      })
+    );
     this.app.use(cors());
     applicationRoutes(this.app);
   }
