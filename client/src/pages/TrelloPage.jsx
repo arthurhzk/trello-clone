@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { Column } from "../components/Column";
 import { DndContext } from "@dnd-kit/core";
+import { Input } from "../components/ui/input";
+import Modal from "../components/Modal";
 
 const COLUMNS = [
   { id: "TODO", title: "Em Aberto" },
   { id: "IN_PROGRESS", title: "Em Andamento" },
-  { id: "DONE", title: "Publicado/Fechado" },
+  { id: "DONE", title: "Publicado / Fechado" },
   { id: "TEST", title: "Teste" },
 ];
 
@@ -71,6 +73,15 @@ export default function TrelloPage() {
           ))}
         </div>
       </DndContext>
+      <Modal
+        title={"Adicionar tarefas no Kanban"}
+        buttonText={"Adicionar Task"}
+        description={"Adicione uma nova tarefa ao seu Kanban"}
+      >
+        <Input placeholder="Título da tarefa" />
+        <Input placeholder="Descrição da tarefa" />
+        <Input placeholder="Status da tarefa" />
+      </Modal>
     </div>
   );
 }

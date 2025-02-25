@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 
-const useLoginUser = (email, password) => {
+const useRegisterUserService = (email, password, confirmPassword) => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [data, setData] = useState([]);
@@ -11,6 +11,7 @@ const useLoginUser = (email, password) => {
       const response = await axios.post("http://localhost:4000/api/signup", {
         email,
         password,
+        confirmPassword,
       });
       if (response.status !== 200) {
         throw new Error("Erro ao fazer a requisição.");
@@ -33,4 +34,4 @@ const useLoginUser = (email, password) => {
   };
 };
 
-export default useLoginUser;
+export default useRegisterUserService;

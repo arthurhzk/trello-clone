@@ -2,8 +2,8 @@ import { UserModel } from "../../infra/models/user-model.js";
 
 export class SignupController {
   async handle(req, res) {
-    const { name, email, password, confirmPassword } = req.body;
-    const requiredFields = ["name", "email", "password", "confirmPassword"];
+    const { email, password, confirmPassword } = req.body;
+    const requiredFields = ["email", "password", "confirmPassword"];
     for (const field of requiredFields) {
       if (!req.body[field]) {
         return res.status(400).send({ error: `Campo ${field} é obrigatório` });
@@ -14,7 +14,6 @@ export class SignupController {
     }
     const createUser = await new UserModel().create(
       {
-        name,
         email,
         password,
       },
