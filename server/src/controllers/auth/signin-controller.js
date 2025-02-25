@@ -33,6 +33,8 @@ export class SigninController {
       process.env.JWT_SECRET
     );
 
+    req.session = { jwt: token };
+
     res.status(200).send({ message: "Login realizado com sucesso!", token });
   }
 }
