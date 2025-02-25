@@ -1,14 +1,14 @@
 import { useState } from "react";
 import axios from "axios";
 
-const useLoginUser = (email, password) => {
+const useLoginUserService = (email, password) => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [data, setData] = useState([]);
   const signUser = async () => {
     setLoading(true);
     try {
-      const response = await axios.post("http://localhost:4000/api/login", {
+      const response = await axios.post("http://localhost:4000/api/signin", {
         email,
         password,
       });
@@ -34,4 +34,4 @@ const useLoginUser = (email, password) => {
   };
 };
 
-export default useLoginUser;
+export default useLoginUserService;
