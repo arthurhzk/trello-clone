@@ -1,4 +1,4 @@
-import { UserModel } from "../../infra/schemas/user-model.js";
+import { UserModel } from "../../infra/models/user-model.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 

@@ -1,4 +1,4 @@
-import { UserModel } from "../../infra/schemas/user-model.js";
+import { UserModel } from "../../infra/models/user-model.js";
 
 export class SignupController {
   async handle(req, res) {

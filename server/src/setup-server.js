@@ -18,7 +18,7 @@ export class Server {
     const server = http.createServer(this.app);
     server
       .listen(process.env.PORT, () => {
-        console.log(`Server is running on port ${process.env.PORT}`);
+        console.log(`Servidor rodando na porta ${process.env.PORT}`);
       })
       .on("error", (error) => {
         console.error(error);

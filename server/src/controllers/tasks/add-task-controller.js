@@ -1,4 +1,4 @@
-import { TaskModel } from "../../infra/schemas/task-model.js";
+import { TaskModel } from "../../infra/models/task-model.js";
 
 export class AddTaskController {
   async handle(req, res) {
