@@ -1,6 +1,5 @@
 import { useState } from "react";
 import axios from "axios";
-import { Toaster } from "../components/ui/sonner";
 const AddTaskService = (email, password) => {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
@@ -23,10 +22,8 @@ const AddTaskService = (email, password) => {
         throw new Error("Erro ao criar task.");
       }
       setData(response.data);
-      Toaster("success", "Task criada com sucesso!");
-      // eslint-disable-next-line no-unused-vars
     } catch (error) {
-      Toaster("error", "Erro ao criar task.");
+      console.error(error);
     } finally {
       setLoading(false);
     }
