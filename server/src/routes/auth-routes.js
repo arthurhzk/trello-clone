@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { SignupController } from "../controllers/signup-controller.js";
+import { SignupController } from "../controllers/auth/signup-controller.js";
 class AuthRoutes {
   router;
 

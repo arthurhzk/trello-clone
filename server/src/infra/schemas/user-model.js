@@ -1,10 +1,15 @@
 import prisma from "../database/prisma-connection.js";
+import bcrypt from "bcrypt";
 
 export class UserModel {
-  async create(data, email) {
+  SALT_ROUNDS = 10;
+
+  async create(data) {
+    const { email, name, password } = data;
+
     try {
       const existingUser = await this.findUserByEmail(email);
-      if (existingUser !== null) {
+      if (existingUser) {
         return {
           status: false,
           code: 400,
@@ -12,11 +17,12 @@ export class UserModel {
         };
       }
 
+      const hashedPassword = await bcrypt.hash(password, this.SALT_ROUNDS);
       const newUser = await prisma.user.create({
         data: {
-          name: data.name ?? "",
-          email: data.email,
-          password: data.password,
+          name: name ?? "",
+          email,
+          password: hashedPassword,
         },
       });
 
@@ -27,12 +33,7 @@ export class UserModel {
         data: newUser,
       };
     } catch (error) {
-      console.error("Erro ao criar usuário:", error);
-      return {
-        status: false,
-        code: 500,
-        message: "Erro ao criar usuário",
-      };
+      return this.handlePrismaError(error, "Erro ao criar usuário");
     }
   }
 
@@ -41,10 +42,38 @@ export class UserModel {
       const user = await prisma.user.findUnique({
         where: { email },
       });
-      return user;
+
+      if (!user) {
+        return {
+          status: false,
+          code: 404,
+          message: "Usuário não encontrado",
+        };
+      }
+
+      return {
+        status: true,
+        code: 200,
+        message: "Usuário encontrado",
+        data: user,
+      };
     } catch (error) {
-      console.error("Erro ao buscar usuário:", error);
-      throw error;
+      return this.handlePrismaError(error, "Erro ao buscar usuário");
     }
+  }
+
+  handlePrismaError(error, defaultMessage) {
+    if (error instanceof PrismaClientKnownRequestError) {
+      return {
+        status: false,
+        code: error.code,
+        message: error.message,
+      };
+    }
+    return {
+      status: false,
+      code: 500,
+      message: defaultMessage,
+    };
   }
 }
