@@ -3,6 +3,7 @@ import AddTaskService from "../services/addTaskService.js";
 import { Button } from "./ui/button.jsx";
 import { Input } from "./ui/input.jsx";
 import { Label } from "./ui/label.jsx";
+
 // eslint-disable-next-line react/prop-types
 const AddTask = ({ columnId, onTaskAdded }) => {
   const [title, setTitle] = useState("");
@@ -28,30 +29,35 @@ const AddTask = ({ columnId, onTaskAdded }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="space-y-2">
-        <Label htmlFor="title">Título</Label>
-        <Input
-          id="title"
-          type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          required
-        />
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="description">Descrição</Label>
-        <Input
-          id="description"
-          type="text"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-      </div>
-      <Button type="submit" className="w-full">
-        Adicionar Tarefa
-      </Button>
-    </form>
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-4 bg-white p-6 rounded shadow-md w-full max-w-md"
+      >
+        <div className="space-y-2">
+          <Label htmlFor="title">Título</Label>
+          <Input
+            id="title"
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            required
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="description">Descrição</Label>
+          <Input
+            id="description"
+            type="text"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+        </div>
+        <Button type="submit" className="w-full cursor-pointer">
+          Adicionar Tarefa
+        </Button>
+      </form>
+    </div>
   );
 };
 
