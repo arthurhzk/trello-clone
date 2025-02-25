@@ -58,7 +58,6 @@ export default function TrelloPage() {
       )
     );
   }
-
   return (
     <div className="p-4">
       <DndContext onDragEnd={handleDragEnd}>

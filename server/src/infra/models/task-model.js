@@ -24,44 +24,13 @@ export class TaskModel {
       return this.handlePrismaError(error, "Erro ao criar tarefa");
     }
   }
-  async updateTask(task) {
-    try {
-      const response = await prisma.task.update({
-        where: {
-          id: task.id,
-        },
-        data: {
-          title: task.title,
-          description: task.description,
-          completed: task.completed,
-        },
-      });
-      return {
-        status: true,
-        code: 200,
-        message: "Tarefa atualizada com sucesso!",
-        data: response,
-      };
-    } catch (error) {
-      return this.handlePrismaError(error, "Erro ao atualizar tarefa");
-    }
-  }
-  async deleteTask(taskId) {
-    try {
-      const response = await prisma.task.delete({
-        where: {
-          id: taskId,
-        },
-      });
-      return {
-        status: true,
-        code: 200,
-        message: "Tarefa deletada com sucesso!",
-        data: response,
-      };
-    } catch (error) {
-      return this.handlePrismaError(error, "Erro ao deletar tarefa");
-    }
+
+  getTasksByID(userId) {
+    return prisma.task.findMany({
+      where: {
+        userId,
+      },
+    });
   }
   handlePrismaError(error, defaultMessage) {
     if (error instanceof PrismaClientKnownRequestError) {
@@ -76,12 +45,5 @@ export class TaskModel {
       code: 500,
       message: defaultMessage,
     };
-  }
-  getTasksByID(userId) {
-    return prisma.task.findMany({
-      where: {
-        userId,
-      },
-    });
   }
 }
