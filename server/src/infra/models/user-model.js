@@ -9,7 +9,7 @@ export class UserModel {
 
     try {
       const existingUser = await this.findUserByEmail(email);
-      if (existingUser) {
+      if (existingUser?.data?.length > 0) {
         return {
           status: false,
           code: 400,
@@ -48,6 +48,7 @@ export class UserModel {
           status: false,
           code: 404,
           message: "Usuário não encontrado",
+          data: user ?? [],
         };
       }
 

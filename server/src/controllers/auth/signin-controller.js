@@ -17,15 +17,18 @@ export class SigninController {
       return res.status(400).send({ error: "Usuário não encontrado" });
     }
 
-    const doesPasswordMatch = await bcrypt.compare(password, user.password);
+    const doesPasswordMatch = await bcrypt.compare(
+      password,
+      user?.data?.password
+    );
     if (!doesPasswordMatch) {
       return res.status(400).send({ error: "Senha incorreta" });
     }
 
     const token = jwt.sign(
       {
-        email: user.data.email,
-        password: user.data.password,
+        email: user?.data?.email,
+        password: user?.data?.password,
       },
       process.env.JWT_SECRET
     );
