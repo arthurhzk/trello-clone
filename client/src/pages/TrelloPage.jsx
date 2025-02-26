@@ -20,7 +20,7 @@ const COLUMNS = [
 
 export default function TrelloPage() {
   const { data, signUser } = useGetTasksService();
-  const [tasks, setTasks] = useState(data);
+  const [tasks, setTasks] = useState([]);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [status, setStatus] = useState("");
@@ -29,6 +29,10 @@ export default function TrelloPage() {
   useEffect(() => {
     signUser();
   }, []);
+
+  useEffect(() => {
+    setTasks(data);
+  }, [data]);
 
   function handleDragEnd(event) {
     const { active, over } = event;
@@ -50,26 +54,28 @@ export default function TrelloPage() {
     );
   }
 
-  function handleAddTask() {
+  async function handleAddTask() {
     const newTask = {
-      id: String(tasks.length + 1),
       title,
       description,
       status,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     };
-    addTask();
-    setTasks([...tasks, newTask]);
-    setTitle("");
-    setDescription("");
-    setStatus("");
+    const response = await addTask(newTask);
+    if (response.status === true) {
+      setTasks((prevTasks) => [...prevTasks, response.data]);
+      setTitle("");
+      setDescription("");
+      setStatus("");
+    }
   }
 
   return (
     <div className="p-4">
       <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-        <SortableContext items={tasks} strategy={verticalListSortingStrategy}>
+        <SortableContext
+          items={tasks.map((task) => task.id)}
+          strategy={verticalListSortingStrategy}
+        >
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8">
             {COLUMNS.map((column) => (
               <Column
