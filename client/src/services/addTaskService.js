@@ -1,16 +1,17 @@
 import { useState } from "react";
 import axios from "axios";
-const AddTaskService = (email, password) => {
+const AddTaskService = (task) => {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
-  const signUser = async () => {
+  const addTask = async () => {
     setLoading(true);
     try {
       const response = await axios.post(
         "http://localhost:4000/api/add",
         {
-          email,
-          password,
+          title: task.title,
+          description: task.description,
+          status: task.status,
         },
         {
           headers: {
@@ -32,7 +33,7 @@ const AddTaskService = (email, password) => {
   return {
     data,
     loading,
-    signUser,
+    addTask,
   };
 };
 

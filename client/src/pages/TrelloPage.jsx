@@ -1,9 +1,15 @@
 import { useState, useEffect } from "react";
+import { DndContext, closestCenter } from "@dnd-kit/core";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import { Column } from "../components/Column";
-import { DndContext } from "@dnd-kit/core";
 import { Input } from "../components/ui/input";
 import useGetTasksService from "../services/getTasksService.js";
 import Modal from "../components/Modal";
+import { Button } from "../components/ui/button";
+import AddTaskService from "../services/addTaskService.js";
 
 const COLUMNS = [
   { id: "TODO", title: "Em Aberto" },
@@ -12,39 +18,13 @@ const COLUMNS = [
   { id: "TEST", title: "Teste" },
 ];
 
-// const INITIAL_TASKS = [
-//   {
-//     id: "1",
-//     title: "Research Project",
-//     description: "Gather requirements and create initial documentation",
-//     status: "TODO",
-//   },
-//   {
-//     id: "2",
-//     title: "Design System",
-//     description: "Create component library and design tokens",
-//     status: "TODO",
-//   },
-//   {
-//     id: "3",
-//     title: "API Integration",
-//     description: "Implement REST API endpoints",
-//     status: "IN_PROGRESS",
-//   },
-//   {
-//     id: "4",
-//     title: "Testing",
-//     description: "Write unit tests for core functionality",
-//     status: "DONE",
-//   },
-// ];
-
 export default function TrelloPage() {
   const { data, signUser } = useGetTasksService();
   const [tasks, setTasks] = useState(data);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [status, setStatus] = useState("");
+  const { addTask } = AddTaskService({ title, description, status });
 
   useEffect(() => {
     signUser();
@@ -58,8 +38,8 @@ export default function TrelloPage() {
     const taskId = active.id;
     const newStatus = over.id;
 
-    setTasks(() =>
-      tasks.map((task) =>
+    setTasks((prevTasks) =>
+      prevTasks.map((task) =>
         task.id === taskId
           ? {
               ...task,
@@ -72,10 +52,14 @@ export default function TrelloPage() {
 
   function handleAddTask() {
     const newTask = {
+      id: String(tasks.length + 1),
       title,
       description,
       status,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     };
+    addTask();
     setTasks([...tasks, newTask]);
     setTitle("");
     setDescription("");
@@ -84,16 +68,18 @@ export default function TrelloPage() {
 
   return (
     <div className="p-4">
-      <DndContext onDragEnd={handleDragEnd}>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8">
-          {COLUMNS.map((column) => (
-            <Column
-              key={column.id}
-              column={column}
-              tasks={tasks.filter((task) => task.status === column.id)}
-            />
-          ))}
-        </div>
+      <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+        <SortableContext items={tasks} strategy={verticalListSortingStrategy}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8">
+            {COLUMNS.map((column) => (
+              <Column
+                key={column.id}
+                column={column}
+                tasks={tasks.filter((task) => task.status === column.id)}
+              />
+            ))}
+          </div>
+        </SortableContext>
       </DndContext>
       <Modal
         title={"Adicionar tarefas no Kanban"}
@@ -114,7 +100,7 @@ export default function TrelloPage() {
         <select
           value={status}
           onChange={(e) => setStatus(e.target.value)}
-          className="mt-2 text-gray block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none sm:text-sm"
+          className="mt-2 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
         >
           <option value="" disabled>
             Selecione o status
@@ -125,6 +111,7 @@ export default function TrelloPage() {
             </option>
           ))}
         </select>
+        <Button onClick={handleAddTask}>Adicionar</Button>
       </Modal>
     </div>
   );

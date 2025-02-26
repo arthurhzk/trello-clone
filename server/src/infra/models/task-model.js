@@ -2,15 +2,15 @@ import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import prisma from "../database/prisma-connection.js";
 
 export class TaskModel {
-  async addTask(task) {
+  async addTask(email, task) {
     try {
       const response = await prisma.task.create({
         data: {
           title: task.title,
           description: task.description,
-          completed: task.completed,
+          status: task.status,
           user: {
-            connect: { id: task.userId },
+            connect: { email: email },
           },
         },
       });

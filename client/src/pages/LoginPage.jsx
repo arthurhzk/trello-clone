@@ -23,7 +23,7 @@ export default function LoginPage() {
   const loginUser = async (event) => {
     event.preventDefault();
     loginUserService.signUser().then(() => {
-      loginUserService.status === 200 ? navigate("/dashboard") : null;
+      loginUserService.status === 200 ? navigate("/trello") : null;
     });
   };
 
