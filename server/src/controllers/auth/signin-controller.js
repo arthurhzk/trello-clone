@@ -13,8 +13,8 @@ export class SigninController {
     }
 
     const user = await new UserModel().findUserByEmail(email);
-    if (!user) {
-      return res.status(400).send({ error: "Usuário não encontrado" });
+    if (user.data.length === 0) {
+      return res.status(404).send({ error: "Usuário não encontrado" });
     }
 
     const doesPasswordMatch = await bcrypt.compare(

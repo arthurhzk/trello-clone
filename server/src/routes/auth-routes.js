@@ -1,19 +1,17 @@
 import { Router } from "express";
 import { SignupController } from "../controllers/auth/signup-controller.js";
 import { SigninController } from "../controllers/auth/signin-controller.js";
-class AuthRoutes {
-  router;
 
+class AuthRoutes {
   constructor() {
     this.router = Router();
+    this.initializeRoutes();
   }
 
-  routes() {
+  initializeRoutes() {
     this.router.post("/signup", SignupController.prototype.handle);
     this.router.post("/signin", SigninController.prototype.handle);
-
-    return this.router;
   }
 }
 
-export const authRoutes = new AuthRoutes();
+export default new AuthRoutes().router;

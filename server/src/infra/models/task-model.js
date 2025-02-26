@@ -25,10 +25,10 @@ export class TaskModel {
     }
   }
 
-  getTasksByID(userId) {
+  getTasksByEmail(email) {
     return prisma.task.findMany({
       where: {
-        userId,
+        userEmail: email,
       },
     });
   }

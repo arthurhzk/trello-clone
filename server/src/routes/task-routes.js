@@ -1,29 +1,28 @@
 import { Router } from "express";
 import { AddTaskController } from "../controllers/tasks/add-task-controller.js";
 import { GetTasksByUserIDController } from "../controllers/tasks/get-tasks-by-user-id-controller.js";
-import { DeleteTaskByUserIDController } from "../controllers/tasks/delete-task-by-user-id-controller.js";
 import { AuthMiddleware } from "../middlewares/auth-middleware.js";
-class TaskRoutes {
-  router;
 
+class TaskRoutes {
   constructor() {
     this.router = Router();
+    this.initializeRoutes();
   }
 
-  routes() {
-    this.router.post("/add", AddTaskController.prototype.handle);
+  initializeRoutes() {
+    const authMiddleware = new AuthMiddleware();
+
+    this.router.post(
+      "/add",
+      authMiddleware.verifyUser.bind(authMiddleware),
+      AddTaskController.prototype.handle
+    );
     this.router.get(
       "/list",
-      AuthMiddleware.prototype.checkAuthentication,
+      authMiddleware.verifyUser.bind(authMiddleware),
       GetTasksByUserIDController.prototype.handle
     );
-    this.router.delete(
-      "/delete/:taskId",
-      DeleteTaskByUserIDController.prototype.handle
-    );
-
-    return this.router;
   }
 }
 
-export const taskRoutes = new TaskRoutes();
+export default new TaskRoutes().router;

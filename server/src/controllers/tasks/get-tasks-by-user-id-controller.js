@@ -1,14 +1,14 @@
 import { TaskModel } from "../../infra/models/task-model.js";
 export class GetTasksByUserIDController {
   async handle(req, res) {
-    const { userId } = req.params;
-    if (!userId) {
-      return res.status(400).send({ error: "Campo userId é obrigatório" });
+    const { email } = req.currentUser;
+
+    const fetchTasksByEmail = await new TaskModel().getTasksByEmail(email);
+
+    if (fetchTasksByEmail.length === 0) {
+      return res.status(204).send("Nenhuma task encontrada");
     }
-    const response = await new TaskModel().getTasksByID(userId);
-    if (!response.status) {
-      return res.status(response.code).send(response.message);
-    }
-    res.status(200).send(response.data);
+
+    res.status(200).send(fetchTasksByEmail);
   }
 }

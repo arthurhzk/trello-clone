@@ -1,39 +1,27 @@
 import { useState } from "react";
 import axios from "axios";
 
-const useLoginUser = () => {
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
+const useGetTasksService = () => {
   const [data, setData] = useState([]);
-  const signUser = async (taskID) => {
-    setLoading(true);
+  const signUser = async () => {
     try {
-      const response = await axios.delete(
-        `http://localhost:4000/api/delete/${taskID}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      if (response.status !== 200) {
-        throw new Error("Erro ao deletar task.");
+      const response = await axios.get(`http://localhost:4000/api/list`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      if (response.status !== 200 && response.status !== 204) {
+        throw new Error("Erro ao buscar tasks.");
       }
       setData(response.data);
-      setMessage("Task deletada com sucesso!");
-      // eslint-disable-next-line no-unused-vars
     } catch (error) {
-      setMessage("Erro ao fazer a requisição. Por favor, tente novamente.");
-    } finally {
-      setLoading(false);
+      console.log(error);
     }
   };
   return {
     data,
-    loading,
-    message,
     signUser,
   };
 };
 
-export default useLoginUser;
+export default useGetTasksService;
