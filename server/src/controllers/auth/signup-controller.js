@@ -1,9 +1,9 @@
 import { UserModel } from "../../infra/models/user-model.js";
-
+import { TaskModel } from "../../infra/models/task-model.js";
 export class SignupController {
   async handle(req, res) {
-    const { name, email, password, confirmPassword } = req.body;
-    const requiredFields = ["name", "email", "password", "confirmPassword"];
+    const { email, password, confirmPassword } = req.body;
+    const requiredFields = ["email", "password", "confirmPassword"];
     for (const field of requiredFields) {
       if (!req.body[field]) {
         return res.status(400).send({ error: `Campo ${field} é obrigatório` });
@@ -14,15 +14,20 @@ export class SignupController {
     }
     const createUser = await new UserModel().create(
       {
-        name,
         email,
         password,
       },
       email
     );
 
-    if (createUser.code === 400) {
-      return res.status(400).send(createUser.message);
+    await new TaskModel().addTask(email, {
+      title: "Bem-vindo ao Trello Clone",
+      description: "Crie suas tarefas e organize seu dia",
+      status: "TODO",
+    });
+
+    if (createUser.code !== 200) {
+      return res.status(createUser.code).send(createUser.message);
     }
     res.status(200).send("Usuário criado com sucesso!");
   }

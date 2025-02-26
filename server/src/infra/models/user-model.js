@@ -5,7 +5,7 @@ export class UserModel {
   SALT_ROUNDS = 10;
 
   async create(data) {
-    const { email, name, password } = data;
+    const { email, password } = data;
 
     try {
       const existingUser = await this.findUserByEmail(email);
@@ -20,7 +20,6 @@ export class UserModel {
       const hashedPassword = await bcrypt.hash(password, this.SALT_ROUNDS);
       const newUser = await prisma.user.create({
         data: {
-          name: name ?? "",
           email,
           password: hashedPassword,
         },
@@ -43,7 +42,7 @@ export class UserModel {
         where: { email },
       });
 
-      if (!user) {
+      if (user === null) {
         return {
           status: false,
           code: 404,
@@ -64,13 +63,6 @@ export class UserModel {
   }
 
   handlePrismaError(error, defaultMessage) {
-    if (error instanceof PrismaClientKnownRequestError) {
-      return {
-        status: false,
-        code: error.code,
-        message: error.message,
-      };
-    }
     return {
       status: false,
       code: 500,
