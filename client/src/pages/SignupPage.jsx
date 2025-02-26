@@ -10,6 +10,7 @@ import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
 import useRegisterUserService from "../services/useRegisterUserService.js";
+import { useNavigate } from "react-router-dom";
 
 export default function SignupPage() {
   const [email, setEmail] = useState("");
@@ -20,6 +21,8 @@ export default function SignupPage() {
     password,
     confirmPassword
   );
+
+  const navigate = useNavigate();
 
   const registerUser = async (event) => {
     event.preventDefault();
@@ -59,9 +62,9 @@ export default function SignupPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Confirmar Senha</Label>
+              <Label htmlFor="confirmPassword">Confirmar Senha</Label>
               <Input
-                id="password"
+                id="confirmPassword"
                 type="password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
@@ -70,6 +73,14 @@ export default function SignupPage() {
             </div>
             <Button type="submit" className="w-full cursor-pointer">
               Criar Conta
+            </Button>
+            <Button
+              type="button"
+              className="w-full mt-4 cursor-pointer"
+              // eslint-disable-next-line no-undef
+              onClick={() => navigate("/login")}
+            >
+              Acessar Conta
             </Button>
           </form>
         </CardContent>

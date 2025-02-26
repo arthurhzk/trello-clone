@@ -1,10 +1,11 @@
 import { useState } from "react";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 const useLoginUserService = (email, password) => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [data, setData] = useState([]);
+  const [status, setStatus] = useState(0);
   const signUser = async () => {
     setLoading(true);
     try {
@@ -18,8 +19,12 @@ const useLoginUserService = (email, password) => {
       setData(response.data);
       localStorage.setItem("token", response.data.token);
       setMessage("Requisição feita com sucesso!");
-      // eslint-disable-next-line no-unused-vars
+      setStatus(response.status);
     } catch (error) {
+      if (error instanceof AxiosError) {
+        setMessage(error.response.data.message);
+        setMessage("Erro ao fazer a requisição. Por favor, tente novamente.");
+      }
       setMessage("Erro ao fazer a requisição. Por favor, tente novamente.");
     } finally {
       setLoading(false);
@@ -27,6 +32,7 @@ const useLoginUserService = (email, password) => {
   };
 
   return {
+    status,
     data,
     loading,
     message,

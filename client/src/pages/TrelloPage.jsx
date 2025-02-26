@@ -42,6 +42,9 @@ const COLUMNS = [
 export default function TrelloPage() {
   const { data, signUser } = useGetTasksService();
   const [tasks, setTasks] = useState(data);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [status, setStatus] = useState("");
 
   useEffect(() => {
     signUser();
@@ -66,6 +69,19 @@ export default function TrelloPage() {
       )
     );
   }
+
+  function handleAddTask() {
+    const newTask = {
+      title,
+      description,
+      status,
+    };
+    setTasks([...tasks, newTask]);
+    setTitle("");
+    setDescription("");
+    setStatus("");
+  }
+
   return (
     <div className="p-4">
       <DndContext onDragEnd={handleDragEnd}>
@@ -83,10 +99,32 @@ export default function TrelloPage() {
         title={"Adicionar tarefas no Kanban"}
         buttonText={"Adicionar Task"}
         description={"Adicione uma nova tarefa ao seu Kanban"}
+        onConfirm={handleAddTask}
       >
-        <Input placeholder="Título da tarefa" />
-        <Input placeholder="Descrição da tarefa" />
-        <Input placeholder="Status da tarefa" />
+        <Input
+          placeholder="Título da tarefa"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
+        <Input
+          placeholder="Descrição da tarefa"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+        />
+        <select
+          value={status}
+          onChange={(e) => setStatus(e.target.value)}
+          className="mt-2 text-gray block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none sm:text-sm"
+        >
+          <option value="" disabled>
+            Selecione o status
+          </option>
+          {COLUMNS.map((column) => (
+            <option key={column.id} value={column.id}>
+              {column.title}
+            </option>
+          ))}
+        </select>
       </Modal>
     </div>
   );
