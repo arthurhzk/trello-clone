@@ -1,5 +1,5 @@
 import { UserModel } from "../../infra/models/user-model.js";
-
+import { TaskModel } from "../../infra/models/task-model.js";
 export class SignupController {
   async handle(req, res) {
     const { email, password, confirmPassword } = req.body;
@@ -20,8 +20,14 @@ export class SignupController {
       email
     );
 
-    if (createUser.code === 400) {
-      return res.status(400).send(createUser.message);
+    await new TaskModel().addTask(email, {
+      title: "Bem-vindo ao Trello Clone",
+      description: "Crie suas tarefas e organize seu dia",
+      status: "TODO",
+    });
+
+    if (createUser.code !== 200) {
+      return res.status(createUser.code).send(createUser.message);
     }
     res.status(200).send("Usuário criado com sucesso!");
   }

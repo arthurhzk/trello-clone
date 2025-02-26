@@ -10,6 +10,7 @@ import useGetTasksService from "../services/getTasksService.js";
 import Modal from "../components/Modal";
 import { Button } from "../components/ui/button";
 import AddTaskService from "../services/addTaskService.js";
+import { toast } from "react-toastify";
 
 const COLUMNS = [
   { id: "TODO", title: "Em Aberto" },
@@ -60,7 +61,11 @@ export default function TrelloPage() {
       description,
       status,
     };
-    const response = await addTask(newTask);
+    const response = await addTask(newTask)
+      .then(() => toast.success("Tarefa adicionada com sucesso!"))
+      .catch(() =>
+        toast.error("Erro ao adicionar tarefa. Por favor, tente novamente.")
+      );
     if (response.status === true) {
       setTasks((prevTasks) => [...prevTasks, response.data]);
       setTitle("");
@@ -70,7 +75,9 @@ export default function TrelloPage() {
   }
 
   return (
-    <div className="p-4">
+    <div className="p-4 bg-gray-100 min-h-screen">
+      <h1 className="text-3xl font-bold text-center mb-8">Trello Clone</h1>
+
       <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext
           items={tasks.map((task) => task.id)}
@@ -106,11 +113,9 @@ export default function TrelloPage() {
         <select
           value={status}
           onChange={(e) => setStatus(e.target.value)}
-          className="mt-2 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+          className="mt-2 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none sm:text-sm"
         >
-          <option value="" disabled>
-            Selecione o status
-          </option>
+          <option disabled>Selecione o status</option>
           {COLUMNS.map((column) => (
             <option key={column.id} value={column.id}>
               {column.title}

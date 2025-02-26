@@ -42,7 +42,7 @@ export class UserModel {
         where: { email },
       });
 
-      if (!user) {
+      if (user === null) {
         return {
           status: false,
           code: 404,
@@ -63,13 +63,6 @@ export class UserModel {
   }
 
   handlePrismaError(error, defaultMessage) {
-    if (error instanceof PrismaClientKnownRequestError) {
-      return {
-        status: false,
-        code: error.code,
-        message: error.message,
-      };
-    }
     return {
       status: false,
       code: 500,

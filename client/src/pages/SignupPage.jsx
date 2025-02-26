@@ -11,6 +11,7 @@ import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
 import useRegisterUserService from "../services/useRegisterUserService.js";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export default function SignupPage() {
   const [email, setEmail] = useState("");
@@ -26,7 +27,11 @@ export default function SignupPage() {
 
   const registerUser = async (event) => {
     event.preventDefault();
-    registerUserService.signUser();
+    await registerUserService.signUser().then(() => {
+      registerUserService.status === 200
+        ? toast.success("Cadastro efetuado com sucesso!") && navigate("/login")
+        : toast.error("Erro ao fazer cadastro. Por favor, tente novamente.");
+    });
   };
 
   return (

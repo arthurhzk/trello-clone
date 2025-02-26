@@ -1,10 +1,10 @@
 import { useState } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const AddTaskService = (task) => {
-  const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const addTask = async () => {
-    setLoading(true);
     try {
       const response = await axios.post(
         "http://localhost:4000/api/add",
@@ -23,16 +23,19 @@ const AddTaskService = (task) => {
         throw new Error("Erro ao criar task.");
       }
       setData(response.data);
+      toast.success("Success Notification !", {
+        position: "bottom-left",
+      });
+      // eslint-disable-next-line no-unused-vars
     } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
+      toast.error("Error Notification !", {
+        position: "bottom-left",
+      });
     }
   };
 
   return {
     data,
-    loading,
     addTask,
   };
 };

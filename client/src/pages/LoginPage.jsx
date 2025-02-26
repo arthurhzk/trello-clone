@@ -11,6 +11,7 @@ import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
 import useLoginUserService from "../services/useLoginUserService.js";
+import { toast } from "react-toastify";
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -22,8 +23,10 @@ export default function LoginPage() {
 
   const loginUser = async (event) => {
     event.preventDefault();
-    loginUserService.signUser().then(() => {
-      loginUserService.status === 200 ? navigate("/trello") : null;
+    await loginUserService.signUser().then(() => {
+      loginUserService.status === 200
+        ? toast.success("Login efetuado com sucesso!") && navigate("/trello")
+        : toast.error("Erro ao fazer login. Por favor, tente novamente.");
     });
   };
 
